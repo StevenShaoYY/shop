@@ -11,6 +11,7 @@ export default {
   install (Vue) {
     const iBox = {
       ...utils,
+      wx,
       http: handleRequest
     }
 

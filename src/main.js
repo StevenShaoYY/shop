@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import App from '@/App'
 import store from '@/store'
+import MpvueRouterPatch from 'mpvue-router-patch'
 
 Vue.config.productionTip = false
+Vue.use(MpvueRouterPatch)
 
 import IboxPlugin from '@/plugins/ibox'
 Vue.use(IboxPlugin)

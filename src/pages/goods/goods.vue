@@ -91,7 +91,7 @@
         </view>
     </view>
 
-    <view class="related-goods" v-if="relatedGoods.length">
+    <!-- <view class="related-goods" v-if="relatedGoods.length">
         <view class="h">
         <view class="line"></view>
         <text class="title">大家都在看</text>
@@ -105,7 +105,7 @@
             </navigator>
         </view>
         </view>
-    </view>
+    </view> -->
     </view>
     <view class="attr-pop-box" :hidden="!openAttr">
     <view class="attr-pop">
@@ -159,6 +159,7 @@
 // import api from '@/utils/api'
 // import wx from 'wx';
 import wxParse from 'mpvue-wxparse'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   components: {
@@ -167,73 +168,88 @@ export default {
   data () {
     return {
       id: 0,
-      goods: {},
-      gallery: [{ img_url: '' }],
-      attribute: [],
-      issueList: [],
-      comment: [],
-      brand: {},
-      specificationList: [],
-      productList: [],
+      // goods: {},
+      // gallery: [{ img_url: '' }],
+      // attribute: [],
+      // issueList: [],
+      // comment: [],
+      // brand: {},
+      // specificationList: [],
+      // productList: [],
       relatedGoods: [],
       cartGoodsCount: 0,
-      userHasCollect: 0,
+      // userHasCollect: 0,
       number: 1,
       checkedSpecText: '请选择规格数量',
       openAttr: false,
       noCollectImage: '/static/images/icon_collect.png',
       hasCollectImage: '/static/images/icon_collect_checked.png',
-      collectBackImage: '/static/images/icon_collect.png',
-      goodDetailHTMLstr: ''
+      collectBackImage: '/static/images/icon_collect.png'
+      // goodDetailHTMLstr: ''
     }
+  },
+  computed: {
+    ...mapState({
+      goods: state => state.good.goods,
+      gallery: state => state.good.gallery,
+      attribute: state => state.good.attribute,
+      issueList: state => state.good.issueList,
+      comment: state => state.good.comment,
+      brand: state => state.good.brand,
+      specificationList: state => state.good.specificationList,
+      productList: state => state.good.productList,
+      userHasCollect: state => state.good.userHasCollect,
+      goodDetailHTMLstr: state => state.good.goodDetailHTMLstr
+    })
   },
   async mounted () {
     if (this.$route.query.id) {
       this.id = parseInt(this.$route.query.id);
     }
+    console.log(this.id)
     await Promise.all([
-      this.getGoodsInfo()
+      this.getGoodsDetail({ id: this.id })
     ]);
-    const res = await api.getCartGoodsCount();
+    // const res = await api.getCartGoodsCount();
     // console.log('购物车商品数量,请求结果', res);
-    if (res.errno === 0) {
-      this.cartGoodsCount = res.data.cartTotal.goodsCount;
-    }
+    // if (res.errno === 0) {
+    //   this.cartGoodsCount = res.data.cartTotal.goodsCount;
+    // }
   },
   methods: {
     // 获取商品详情
-    async getGoodsInfo () {
-      const res = await api.getGoodsDetail({ id: this.id });
-      // console.log('商品详情,请求结果', res);
-      if (res.errno === 0) {
-        this.goods = res.data.info;
-        this.gallery = res.data.gallery.length > 0 ? res.data.gallery : [{ img_url: '/static/images/icon_error.png' }];
-        this.attribute = res.data.attribute;
-        this.issueList = res.data.issue;
-        this.comment = res.data.comment;
-        this.brand = res.data.brand;
-        this.specificationList = res.data.specificationList;
-        this.productList = res.data.productList;
-        this.userHasCollect = res.data.userHasCollect;
-        if (res.data.userHasCollect === 1) {
-          this.collectBackImage = this.hasCollectImage;
-        } else {
-          this.collectBackImage = this.noCollectImage;
-        }
-        // wxParse的内容
-        this.goodDetailHTMLstr = res.data.info.goods_desc ? res.data.info.goods_desc : '暂无详情数据';
-        // 取“相关商品推荐”信息
-        this.getGoodsRelated();
-      }
-    },
+    // async getGoodsInfo () {
+    //   const res = await api.getGoodsDetail({ id: this.id });
+    //   // console.log('商品详情,请求结果', res);
+    //   if (res.errno === 0) {
+    //     this.goods = res.data.info;
+    //     this.gallery = res.data.gallery.length > 0 ? res.data.gallery : [{ img_url: '/static/images/icon_error.png' }];
+    //     this.attribute = res.data.attribute;
+    //     this.issueList = res.data.issue;
+    //     this.comment = res.data.comment;
+    //     this.brand = res.data.brand;
+    //     this.specificationList = res.data.specificationList;
+    //     this.productList = res.data.productList;
+    //     this.userHasCollect = res.data.userHasCollect;
+    //     if (res.data.userHasCollect === 1) {
+    //       this.collectBackImage = this.hasCollectImage;
+    //     } else {
+    //       this.collectBackImage = this.noCollectImage;
+    //     }
+    //     // wxParse的内容
+    //     this.goodDetailHTMLstr = res.data.info.goods_desc ? res.data.info.goods_desc : '暂无详情数据';
+    //     // 取“相关商品推荐”信息
+    //     this.getGoodsRelated();
+    //   }
+    // },
     // 获得“相关商品推荐”信息
-    async getGoodsRelated () {
-      const res = await api.getGoodsRelated({ id: this.id });
-      // console.log('相关商品推荐', res);
-      if (res.errno === 0) {
-        this.relatedGoods = res.data.goodsList;
-      }
-    },
+    // async getGoodsRelated () {
+    //   const res = await api.getGoodsRelated({ id: this.id });
+    //   // console.log('相关商品推荐', res);
+    //   if (res.errno === 0) {
+    //     this.relatedGoods = res.data.goodsList;
+    //   }
+    // },
     // 规格弹窗中，每个规则项的点击事件
     clickSkuValue (event) {
       let specNameId = event.currentTarget.dataset.nameId;
@@ -344,21 +360,22 @@ export default {
     },
     // 购物车的五角星，添加或是取消收藏
     async addCannelCollect () {
-      const res = await api.CollectAddOrDelete({ typeId: 0, valueId: this.id });
-      // console.log('添加或取消收藏', res);
-      if (res.errno === 0) {
-        if (res.data.type === 'add') {
-          this.collectBackImage = this.hasCollectImage;
-        } else {
-          this.collectBackImage = this.noCollectImage;
-        }
-      } else {
-        wx.showToast({
-          image: '/static/images/icon_error.png',
-          title: res.errmsg,
-          mask: true
-        });
-      }
+      console.log('添加收藏')
+      // const res = await api.CollectAddOrDelete({ typeId: 0, valueId: this.id });
+      // // console.log('添加或取消收藏', res);
+      // if (res.errno === 0) {
+      //   if (res.data.type === 'add') {
+      //     this.collectBackImage = this.hasCollectImage;
+      //   } else {
+      //     this.collectBackImage = this.noCollectImage;
+      //   }
+      // } else {
+      //   wx.showToast({
+      //     image: '/static/images/icon_error.png',
+      //     title: res.errmsg,
+      //     mask: true
+      //   });
+      // }
     },
     // 跳转到购物车页面
     openCartPage () {
@@ -368,58 +385,59 @@ export default {
     },
     // 加入购物车，多种判断哦~
     async addToCart () {
-      if (this.openAttr === false) {
-        // 打开规格选择弹窗
-        this.openAttr = !this.openAttr;
-      } else {
-        // 提示选择完整规格
-        if (!this.isCheckedAllSpec()) {
-          wx.showToast({
-            image: '/static/images/icon_error.png',
-            title: '规格选择不完整',
-            mask: true
-          });
-          return false;
-        }
-        // 根据选中的规格，判断是否有对应的sku信息
-        let checkedProduct = this.getCheckedProductItem(this.getCheckedSpecKey());
-        // console.log('checkedProduct', checkedProduct);
-        // 验证商品型号
-        if (!checkedProduct || checkedProduct.length <= 0) {
-          // 提示没有库存
-          wx.showToast({
-            image: '/static/images/icon_error.png',
-            title: '库存型号不足',
-            mask: true
-          });
-          return false;
-        }
-        // 验证商品数量
-        if (checkedProduct.goods_number < this.number) {
-          wx.showToast({
-            image: '/static/images/icon_error.png',
-            title: '库存数量不足',
-            mask: true
-          });
-          return false;
-        }
-        // 添加到购物车
-        const res = await api.CartAdd({ goodsId: this.goods.id, number: this.number, productId: checkedProduct[0].id });
-        // console.log('添加到购物车，请求结果', res);
-        if (res.errno === 0) {
-          wx.showToast({
-            title: '添加成功'
-          });
-          this.openAttr = !this.openAttr;
-          this.cartGoodsCount = res.data.cartTotal.goodsCount;
-        } else {
-          wx.showToast({
-            image: '/static/images/icon_error.png',
-            title: res.errmsg,
-            mask: true
-          });
-        }
-      }
+      console.log('添加购物车')
+      // if (this.openAttr === false) {
+      //   // 打开规格选择弹窗
+      //   this.openAttr = !this.openAttr;
+      // } else {
+      //   // 提示选择完整规格
+      //   if (!this.isCheckedAllSpec()) {
+      //     wx.showToast({
+      //       image: '/static/images/icon_error.png',
+      //       title: '规格选择不完整',
+      //       mask: true
+      //     });
+      //     return false;
+      //   }
+      //   // 根据选中的规格，判断是否有对应的sku信息
+      //   let checkedProduct = this.getCheckedProductItem(this.getCheckedSpecKey());
+      //   // console.log('checkedProduct', checkedProduct);
+      //   // 验证商品型号
+      //   if (!checkedProduct || checkedProduct.length <= 0) {
+      //     // 提示没有库存
+      //     wx.showToast({
+      //       image: '/static/images/icon_error.png',
+      //       title: '库存型号不足',
+      //       mask: true
+      //     });
+      //     return false;
+      //   }
+      //   // 验证商品数量
+      //   if (checkedProduct.goods_number < this.number) {
+      //     wx.showToast({
+      //       image: '/static/images/icon_error.png',
+      //       title: '库存数量不足',
+      //       mask: true
+      //     });
+      //     return false;
+      //   }
+      //   // 添加到购物车
+      //   const res = await api.CartAdd({ goodsId: this.goods.id, number: this.number, productId: checkedProduct[0].id });
+      //   // console.log('添加到购物车，请求结果', res);
+      //   if (res.errno === 0) {
+      //     wx.showToast({
+      //       title: '添加成功'
+      //     });
+      //     this.openAttr = !this.openAttr;
+      //     this.cartGoodsCount = res.data.cartTotal.goodsCount;
+      //   } else {
+      //     wx.showToast({
+      //       image: '/static/images/icon_error.png',
+      //       title: res.errmsg,
+      //       mask: true
+      //     });
+      //   }
+      // }
     },
     // 减少数量
     cutNumber () {
@@ -428,7 +446,10 @@ export default {
     // 增加数量
     addNumber () {
       this.number = this.number + 1;
-    }
+    },
+    ...mapActions('good', [
+      'getGoodsDetail'
+    ])
   },
   // 原生的分享功能
   onShareAppMessage: function () {
@@ -442,7 +463,7 @@ export default {
 </script>
 
 <style>
-@import "../../utils/wxParse/wxParse.wxss";
+@import "../../plugins/wxParse/wxParse.wxss";
 
 .container {
   margin-bottom: 100rpx;
