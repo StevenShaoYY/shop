@@ -22,6 +22,20 @@ module.exports = [
     }
   },
   {
+    path: '/pages/ucenter/address',
+    config: {
+      navigationBarTitleText: '地址管理',
+      enablePullDownRefresh: false
+    }
+  },
+  {
+    path: '/pages/ucenter/addressAdd',
+    config: {
+      navigationBarTitleText: '地址编辑',
+      enablePullDownRefresh: false
+    }
+  },
+  {
     path: '/pages/goods/goods',
     config: {
       navigationBarTitleText: '商品详情',

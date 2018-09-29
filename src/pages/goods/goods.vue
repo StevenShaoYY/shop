@@ -110,7 +110,7 @@
     <view class="attr-pop-box" :hidden="!openAttr">
     <view class="attr-pop">
         <view class="close" @click="closeAttr">
-        <img class="icon" src="/static/images/icon_close.png"/>
+          <img class="icon" src="/static/images/icon_close.png"/>
         </view>
         <view class="img-info">
         <img class="img" :src="gallery[0].img_url"/>
@@ -252,6 +252,7 @@ export default {
     // },
     // 规格弹窗中，每个规则项的点击事件
     clickSkuValue (event) {
+      console.log(event)
       let specNameId = event.currentTarget.dataset.nameId;
       let specValueId = event.currentTarget.dataset.valueId;
       // 判断是否可以点击

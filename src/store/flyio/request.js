@@ -6,7 +6,7 @@ const errorFunction = (reqConfig, err) => {
   // 如果有异常需要提示
   if (!reqConfig.errorAction && reqConfig.isErrorDefaultTip) {
     setTimeout(() => {
-      Config.resError.tipShow()
+      Config.resError.tipShow(err)
     }, 0)
   }
   throw (err)

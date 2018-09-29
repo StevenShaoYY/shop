@@ -44,9 +44,9 @@
 </template>
 
 <script>
-import api from '@/utils/api'
-import wx from 'wx'
-import util from '@/utils/util'
+// import api from '@/utils/api'
+// import wx from 'wx'
+// import util from '@/utils/util'
 
 export default {
   data () {
@@ -78,37 +78,37 @@ export default {
     if (this.$route.query.id) {
       this.addressId = parseInt(this.$route.query.id);
     }
-    await Promise.all([
-      this.getAddressDetail()
-    ])
-    this.getRegionList(1);
+    // await Promise.all([
+    //   this.getAddressDetail()
+    // ])
+    // this.getRegionList(1);
   },
   methods: {
     // 获取地址详情信息
-    async getAddressDetail () {
-      const res = await api.getAddressDetail({ id: this.addressId });
-      // console.log('地址详情,请求结果', res);
-      if (res.errno === 0) {
-        this.address = res.data;
-      }
-    },
+    // async getAddressDetail () {
+    //   const res = await api.getAddressDetail({ id: this.addressId });
+    //   // console.log('地址详情,请求结果', res);
+    //   if (res.errno === 0) {
+    //     this.address = res.data;
+    //   }
+    // },
     // 获得对应级别的地市信息
-    async getRegionList (regionId) {
-      let regionType = this.regionType;
-      const res = await api.getRegionList({ parentId: regionId });
-      // console.log('地市信息,请求结果', res);
-      if (res.errno === 0) {
-        this.regionList = res.data.map(item => {
-          // 找到已选择的
-          if (regionType === item.type && this.selectRegionList[regionType - 1].id === item.id) {
-            item.selected = true;
-          } else {
-            item.selected = false;
-          }
-          return item;
-        })
-      }
-    },
+    // async getRegionList (regionId) {
+    //   let regionType = this.regionType;
+    //   const res = await api.getRegionList({ parentId: regionId });
+    //   // console.log('地市信息,请求结果', res);
+    //   if (res.errno === 0) {
+    //     this.regionList = res.data.map(item => {
+    //       // 找到已选择的
+    //       if (regionType === item.type && this.selectRegionList[regionType - 1].id === item.id) {
+    //         item.selected = true;
+    //       } else {
+    //         item.selected = false;
+    //       }
+    //       return item;
+    //     })
+    //   }
+    // },
     // 获得输入的电话号码
     bindinputMobile (event) {
       // console.log('输入的电话号码', event);
@@ -257,37 +257,53 @@ export default {
       // console.log(this.address)
       let address = this.address;
       if (address.name === '') {
-        util.showErrorToast('请输入姓名');
+        wx.showToast({
+          title: '请输入姓名',
+          image: '/static/images/icon_error.png'
+        })
+        // util.showErrorToast('请输入姓名');
         return false;
       }
       if (address.mobile === '') {
-        util.showErrorToast('请输入手机号码');
+        wx.showToast({
+          title: '请输入手机号码',
+          image: '/static/images/icon_error.png'
+        })
+        // util.showErrorToast('请输入手机号码');
         return false;
       }
       if (address.district_id === 0) {
-        util.showErrorToast('请输入省市区');
+        wx.showToast({
+          title: '请输入省市区',
+          image: '/static/images/icon_error.png'
+        })
+        // util.showErrorToast('请输入省市区');
         return false;
       }
       if (address.address === '') {
-        util.showErrorToast('请输入详细地址');
+        wx.showToast({
+          title: '请输入详细地址',
+          image: '/static/images/icon_error.png'
+        })
+        // util.showErrorToast('请输入详细地址');
         return false;
       }
-      const res = await api.AddressSave({
-        id: address.id,
-        name: address.name,
-        mobile: address.mobile,
-        province_id: address.province_id,
-        city_id: address.city_id,
-        district_id: address.district_id,
-        address: address.address,
-        is_default: address.is_default
-      });
+      // const res = await api.AddressSave({
+      //   id: address.id,
+      //   name: address.name,
+      //   mobile: address.mobile,
+      //   province_id: address.province_id,
+      //   city_id: address.city_id,
+      //   district_id: address.district_id,
+      //   address: address.address,
+      //   is_default: address.is_default
+      // });
       // console.log('保存地址,请求结果', res);
-      if (res.errno === 0) {
-        wx.navigateTo({
-          url: '../ucenter/address'
-        })
-      }
+      // if (res.errno === 0) {
+      //   wx.navigateTo({
+      //     url: '../ucenter/address'
+      //   })
+      // }
     }
   },
   // 原生的分享功能

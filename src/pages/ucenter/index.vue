@@ -71,7 +71,7 @@
     <view class="item item-bottom">
       <view class="a">
         <text class="icon help"></text>
-        <text class="txt">帮助中心</text>
+        <text class="txt">常见问题</text>
       </view>
     </view>
     <view class="item item-bottom">

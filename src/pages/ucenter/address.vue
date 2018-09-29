@@ -12,7 +12,7 @@
                 <view class="address">{{item.full_region + item.address}}</view>
             </view>
             <view class="r">
-                <image @click.stop="deleteAddress" :data-address-id="item.id" class="del" src="/static/images/del-address.png"/>
+                <image :data-address-id="item.id" class="del" src="/static/images/del-address.png"/>
             </view>
         </view>
     </view>
@@ -25,14 +25,15 @@
 </template>
 
 <script>
-import api from '@/utils/api'
-import wx from 'wx'
+// import api from '@/utils/api'
+// import wx from 'wx'
+import { mapState, mapActions } from 'vuex'
 
 export default {
-  data () {
-    return {
-      addressList: []
-    }
+  computed: {
+    ...mapState({
+      addressList: state => state.address.addressList
+    })
   },
   async mounted () {
     await Promise.all([
@@ -41,40 +42,43 @@ export default {
   },
   methods: {
     // 获取地址信息
-    async getAddressList () {
-      const res = await api.getAddressList();
-      // console.log('地址管理,请求结果', res);
-      if (res.errno === 0) {
-        this.addressList = res.data;
-      }
-    },
+    ...mapActions('address', [
+      'getAddressList'
+    ]),
+    // async getAddressList () {
+    //   const res = await api.getAddressList();
+    //   // console.log('地址管理,请求结果', res);
+    //   if (res.errno === 0) {
+    //     this.addressList = res.data;
+    //   }
+    // },
     // 点击修改，或者点击底部“新建”
     addressAddOrUpdate (event) {
       // console.log('点击修改/新建地址', event)
       wx.navigateTo({
         url: '../ucenter/addressAdd?id=' + event.currentTarget.dataset.addressId
       })
-    },
-    // 点击删除图标
-    deleteAddress (event) {
-      // console.log('点击删除', event)
-      let that = this;
-      wx.showModal({
-        title: '',
-        content: '确定要删除地址？',
-        success: async function (res) {
-          if (res.confirm) {
-            let addressId = event.target.dataset.addressId;
-            const res = await api.AddressDelete({ id: addressId });
-            // console.log('删除地址,请求结果', res);
-            if (res.errno === 0) {
-              that.getAddressList();
-            }
-          }
-        }
-      })
-      return false;
     }
+    // 点击删除图标
+    // deleteAddress (event) {
+    //   // console.log('点击删除', event)
+    //   let that = this;
+    //   wx.showModal({
+    //     title: '',
+    //     content: '确定要删除地址？',
+    //     success: async function (res) {
+    //       if (res.confirm) {
+    //         let addressId = event.target.dataset.addressId;
+    //         const res = await api.AddressDelete({ id: addressId });
+    //         // console.log('删除地址,请求结果', res);
+    //         if (res.errno === 0) {
+    //           that.getAddressList();
+    //         }
+    //       }
+    //     }
+    //   })
+    //   return false;
+    // }
   },
   // 原生的分享功能
   onShareAppMessage: function () {
