@@ -69,10 +69,10 @@
       </view>
     </view>
     <view class="item item-bottom">
-      <view class="a">
+      <navigator url="../ucenter/faqpage" class="a">
         <text class="icon help"></text>
         <text class="txt">常见问题</text>
-      </view>
+      </navigator>
     </view>
     <view class="item item-bottom">
       <navigator url="../ucenter/feedback" class="a">

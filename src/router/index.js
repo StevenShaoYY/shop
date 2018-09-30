@@ -36,6 +36,13 @@ module.exports = [
     }
   },
   {
+    path: '/pages/ucenter/faqpage',
+    config: {
+      navigationBarTitleText: '常见问题',
+      enablePullDownRefresh: false
+    }
+  },
+  {
     path: '/pages/goods/goods',
     config: {
       navigationBarTitleText: '商品详情',

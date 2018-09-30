@@ -1,82 +1,65 @@
 <template >
 <view class="container">
-  
+  <ul class="trans-faq">
+    <li :class="{'content-show':showList[index]}" v-for="(item, index) of faqList" :key="item.id" :data-index="index"  @click="showDetail($event)">
+      <h2>{{item.title}}</h2>
+      <div>
+        <text>
+          {{item.content}}
+        </text>
+      </div>
+    </li>
+  </ul>
 </view>
 </template>
 
 <script>
-import api from '@/utils/api'
-import wx from 'wx'
 
 export default {
   data () {
     return {
-      typeId: 0,
-      collectList: []
+      faqList: [
+        {
+          id: '1',
+          title: '关于租机',
+          content: '关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机'
+        },
+        {
+          id: '2',
+          title: '关于租机',
+          content: '关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机'
+        },
+        {
+          id: '3',
+          title: '关于租机',
+          content: '关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机'
+        },
+        {
+          id: '4',
+          title: '关于租机',
+          content: '关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机'
+        },
+        {
+          id: '5',
+          title: '关于租机',
+          content: '关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机关于租机'
+        }
+      ],
+      showList: [true, true, false, false, false]
     }
   },
   async mounted () {
-    await Promise.all([
-      this.getCollectList()
-    ])
   },
   methods: {
-    // 获取我的收藏信息
-    async getCollectList () {
-      const res = await api.getCollectList({ typeId: this.typeId });
-      // console.log('我的收藏,请求结果', res);
-      if (res.errno === 0) {
-        this.collectList = res.data.data;
+    showDetail (e) {
+      for (const item in this.showList) {
+        // console.log(item.toString() === e.currentTarget.dataset.index.toString())
+        if (item === e.currentTarget.dataset.index.toString()) {
+          this.showList[item] = true
+        } else {
+          this.showList[item] = false
+        }
       }
-    },
-    // 长按删除，点击进入商品详情
-    async openGoods (event) {
-      let goodsId = this.collectList[event.currentTarget.dataset.index].value_id;
-      // 触摸时间距离页面打开的毫秒数
-      var touchTime = this.touch_end - this.touch_start;
-      // console.log(touchTime);
-      // 如果按下时间大于350为长按
-      if (touchTime > 350) {
-        var that = this;
-        wx.showModal({
-          title: '',
-          content: '取消收藏？',
-          success: async function (res) {
-            // console.log('确定取消收藏', res);
-            if (res.confirm) {
-              const res = await api.CollectAddOrDelete({ typeId: that.typeId, valueId: goodsId });
-              if (res.errno === 0) {
-                wx.showToast({
-                  title: '删除成功',
-                  icon: 'success',
-                  duration: 2000
-                });
-                that.getCollectList();
-              }
-            }
-          }
-        })
-      } else {
-        wx.navigateTo({
-          url: '../goods/goods?id=' + goodsId
-        });
-      }
-    },
-    // 按下事件开始
-    touchStart (e) {
-      this.touch_start = e.timeStamp;
-    },
-    // 按下事件结束
-    touchEnd (e) {
-      this.touch_end = e.timeStamp;
-    }
-  },
-  // 原生的分享功能
-  onShareAppMessage: function () {
-    return {
-      title: 'xbyjShop',
-      desc: '仿网易严选小程序商城',
-      path: '/pages/ucenter/collect'
     }
   }
 }
@@ -93,62 +76,48 @@ page{
     min-height: 100%;
 }
 
-.collect-list{
+.trans-faq{
+  width: 94%;
+  margin: 2% 3%;
+}
+
+.trans-faq li {
   width: 100%;
-  height: auto;
+  height: 90rpx;
   overflow: hidden;
-  background: #fff;
-  padding-left: 30rpx;
-  border-top: 1px solid #e1e1e1;
+  background-color: #fff;
+  border-radius: 8rpx;
+  box-shadow: 2px 2px 10px #cccccc;
+  transition: height 0.3s ease-in-out;
 }
 
-.item{
-  height: 212rpx;
-  width: 720rpx;
-  background: #fff;
-  padding: 30rpx 30rpx 30rpx 0;
-  border-bottom: 1px solid #e1e1e1;
+.trans-faq li + li{
+  margin-top: 20rpx;
 }
 
-.item:last-child{
-  border-bottom: 1px solid #fff;
+.trans-faq li h2{
+  width: 100%;
+  height: 90rpx;
+  overflow: hidden;
+  line-height: 90rpx;
+  font-size: 26rpx;
+  padding-left: 26rpx;
+  color:#444444;
+  cursor: pointer;
 }
-
-.item .img{
-  float: left;
-  width: 150rpx;
-  height: 150rpx;
-}
-
-.item .info{
-  float: right;
-  width: 540rpx;
-  height: 150rpx;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-left: 20rpx;
-}
-
-.item .info .name{
-  font-size: 28rpx;
-  color: #333;
+.trans-faq li div{
+  width: 92%;
   line-height: 40rpx;
+  font-size: 25rpx;
+  padding: 0 0 26rpx 4%;
+  margin: 0;
+  color:#555555;
+}
+.trans-faq li div text{
+  width: 100%;
 }
 
-
-.item .info .subtitle{
-  margin-top: 8rpx;
-  font-size: 24rpx;
-  color: #888;
-  line-height: 40rpx;
+.trans-faq .content-show{
+  height: 100%;
 }
-
-.item .info .price{
-  margin-top: 8rpx;
-  font-size: 28rpx;
-  color: #333;
-  line-height: 40rpx;
-}
-
 </style>
